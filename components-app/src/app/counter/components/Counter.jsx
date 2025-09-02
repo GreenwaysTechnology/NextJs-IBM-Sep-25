@@ -1,3 +1,4 @@
+//client Server
 
 'use client' //directive
 

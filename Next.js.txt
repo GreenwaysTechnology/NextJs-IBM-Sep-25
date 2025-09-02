@@ -1044,7 +1044,202 @@ export default function PostPage(){
     </div>
 }
 
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\										Patterns for client and server components
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
+1.Server component uses another Server Component
+   inside layout.js we use page.js
+   inside page.js we use UserList.js
+
+2.Server component uses client component
+
+3.Client component uses another server component
+
+4.Client component uses another client component
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+								2.Server component uses client component
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Server:
+
+src/app/reviews/page.js
+import { Like } from './components/like'
+
+export default function ReviewPage() {
+    return <div>
+        <h1>Review Page</h1>
+        <Like />
+    </div>
+}
+
+Client:
+src/app/reviews/components/likes.jsx
+
+'use client'
+import { useState } from "react"
+export const Like = props => {
+    const [value, setValue] = useState(0)
+
+    const onLike = () => {
+        setValue(value + 1)
+    }
+    return <>
+        <h1>Like {value}</h1>
+        <button onClick={onLike}>Like</button>
+    </>
+}
+
+Note:
+ if server uses client, the client component must be marked with "use client" directive
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+							Client component uses another server component
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+src/app/clientserverpattern/components/server.jsx
+
+export default function Server(){
+    return <div>
+        <h1>Server Component</h1>
+    </div>
+}
+
+src/app/clientserverpattern/components/client.jsx
+
+'use client'
+
+import Server from "@/app/clientserverpattern/components/server"
+
+export default function Client() {
+    return <div>
+        <h1>Client Component</h1>
+        <Server />
+    </div>
+}
+
+			 if client uses another server component,"server component automatically becomes client component"
+
+						 	When we use this pattern we loose server rendering
+
+In the above code Server component runs in the client only.
+
+
+		What if "client uses server component" but at the same time, i dont want to loose server rendering feature?
+
+Solution:
+     Pass Server Component as Prop to Child  component.
+
+
+src/app/clientserverpattern/components/server.jsx
+
+export default function Server(){
+    return <div>
+        <h1>Server Component</h1>
+    </div>
+}
+
+
+src/app/clientserverpattern/components/client.jsx
+'use client'
+
+// import Server from "@/app/clientserverpattern/components/server"
+
+export default function Client(props) {
+    return <div>
+        <h1>Client Component</h1>
+        {/* <Server /> */}
+        {props.children}
+    </div>
+}
+
+src/app/clientserverpattern/page.jsx
+
+import Client from "@/app/clientserverpattern/components/client";
+import Server from "@/app/clientserverpattern/components/server"
+
+export default function Page() {
+
+    return <>
+        {/* <Client /> */}
+        <Client>
+            {/* Pass server component as prop to Client */}
+            <Server />
+        </Client>
+    </>
+}
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									Client Compoent uses another client Component
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+src/app/clientusesclientpattern/page.js
+import Counter from '@/app/clientusesclientpattern/components/Counter'
+
+export default function ClientUsesClient(){
+    return <>
+        <Counter/>
+    </>
+}
+src/app/clientusesclientpattern/components/Increment.jsx
+'use client'
+
+import { useState } from "react"
+
+export default function Increment() {
+    const [value, setValue] = useState(0)
+    return <>
+        <h1>Increment</h1>
+        <h2>Value : {value}</h2>
+        <button onClick={() => {
+            setValue(value + 1)
+        }}>+</button>
+    </>
+}
+src/app/clientusesclientpattern/components/Counter.jsx
+
+'use client'
+import Increment from "@/app/clientusesclientpattern/components/Increment"
+
+export default function Counter(){
+
+    return <>
+        <Increment/>
+    </>
+}
+
+
+Note :
+
+		If client component uses another client component, that another client component no need to use 'use client' directive.
+
+					This would be very useful when we use thrid party ui components into next js
+
+How to use react carbon lib
+
+Steps:
+
+1.npm install @carbon/react
+
+src/app/carbon/page.jsx
+import MyButton from "@/app/carbon/components/MyButton";
+
+export default function CarbonPage() {
+    return <>
+        <MyButton />
+    </>
+}
+
+src/app/carbon/components/MyButton.jsx
+'use client'
+import { Button } from "@carbon/react";
+
+export default function MyButton(){
+    return <>
+        <Button>Click</Button>
+    </>
+}
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 
 

@@ -45,7 +45,7 @@ export default function Post() {
         setForm({ title: '', body: '', id: null })
     }
 
-    return <>
+    return <div>
         {/* Form to add new Post /Edit Existing Post */}
         {/* {JSON.stringify(form)} */}
         <form onSubmit={handleSubmit}>
@@ -67,7 +67,8 @@ export default function Post() {
         </form>
 
         {/* List of Posts */}
-        {
+
+        <ul>{
             posts.map(post => {
                 return <li key={post.id}>
                     <h2>{post.title}</h2>
@@ -85,5 +86,6 @@ export default function Post() {
                 </li>
             })
         }
-    </>
+        </ul>
+    </div>
 }

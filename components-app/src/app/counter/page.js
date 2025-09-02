@@ -1,3 +1,5 @@
+//This is server component
+
 import Counter from "@/app/counter/components/Counter";
 
 export default function CounterPage(){
