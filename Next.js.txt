@@ -3203,14 +3203,137 @@ export default function UsersPage() {
         <User />
     </div>
 }
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+.				 						Server actions
+..........................................................................................................................................................................................................................................
+
+	Server Actions are a feature in Next.js 15 that allow you to perform server-side operations directly from the client without creating an API route or an explicit handler.
+
+ This feature simplifies data fetching, form submissions, or other server-side logic by integrating it seamlessly into your component tree.
+
+Key Features of Server Actions in Next.js 15:
+
+1.Server-First Logic:
+  Runs on the server, avoiding unnecessary client-side processing.
+  Can securely access server-only resources like databases, environment variables, and APIs.
+  Direct Invocation from Components:
+
+  Trigger server-side logic directly via React components.
+  No need for separate API endpoints.
+
+2.Optimized Performance:
+ Reduces data fetching overhead.
+ Automatically optimizes the server-client data flow.
+
+3.Type Safety:
+  Built-in TypeScript support ensures type safety across your components and server logic.
 
 
+Integrated with App Router:
+
+Perfectly fits into Next.js's App Router system for organizing server and client code.
 
 
+Getting coding:
 
+'use server'
+export async function save(data){
+   //logic
+ }
+npx create-next-app@latest
+√ What is your project named? ... server-actions
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
 
+Use case: How to invoke server actions from the client component.
 
+Counter Increment logic inside client component using client side
 
+src/app/counter/components/counter.jsx
+'use client'
+
+import { useState } from "react"
+
+export default function Counter() {
+    const [value, setValue] = useState(0)
+
+    return <div>
+        <h1>Counter : {value}</h1>
+        <button onClick={() => {
+            console.log('counter client')
+            setValue(value + 1)
+        }}>+</button>
+    </div>
+}
+src/app/counter/page.js
+import Counter from "@/app/counter/components/Counter";
+
+export default function CounterPage(){
+    return <div className="m-20">
+            <Counter/>
+    </div>
+}
+Now you can notice this logic is executed in client.
+
+						Can i write increment logic inside server, when i click the button which is part of client
+
+Yes! - Server Actions
+
+Server actions are simple function function which may take arg or return value...
+
+src/app/actions/counterAction.js
+
+'use server'
+
+let count = 0
+export async function increment() {
+    console.log('Running in server', count)
+    //return count - Promise.resolve(count)
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(count++)
+        }, 5000)
+    })
+}
+
+src/app/counter/components/Counter.jsx
+
+'use client'
+
+import { increment } from "@/app/actions/counterAction"
+import { useState, useTransition } from "react"
+
+export default function Counter({ initalCount = 0 }) {
+    const [isPending, startTransition] = useTransition()
+    const [count, setCount] = useState(initalCount)
+    const handleIncrement = () => {
+        startTransition(async () => {
+            const newCount = await increment()
+            setCount(newCount)
+        })
+    }
+    return <>
+        <h1>{isPending ? 'Updating...' : `count:${count}`}</h1>
+        <button onClick={handleIncrement} disabled={isPending}>
+            +
+        </button>
+
+    </>
+}
+src/app/counter/page.js
+import Counter from "@/app/counter/components/Counter";
+
+export default function CounterPage(){
+    return <div className="m-20">
+            <Counter/>
+    </div>
+}
 
 
 
