@@ -7,7 +7,15 @@ export async function increment() {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(count++)
-        }, 5000)
+        }, 100)
     })
 }
-
+export async function decrement() {
+    console.log('Running in server', count)
+    //return count - Promise.resolve(count)
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(count--)
+        }, 100)
+    })
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { increment } from "@/app/actions/counterAction"
+import { increment,decrement } from "@/app/actions/counterAction"
 import { useState, useTransition } from "react"
 
 export default function Counter({ initalCount = 0 }) {
@@ -12,11 +12,20 @@ export default function Counter({ initalCount = 0 }) {
             setCount(newCount)
         })
     }
+    const handleDecrement = () => {
+        startTransition(async () => {
+            const newCount = await decrement();
+            setCount(newCount);
+        });
+    };
     return <>
         <h1>{isPending ? 'Updating...' : `count:${count}`}</h1>
-        <button onClick={handleIncrement} disabled={isPending}>
-            +
-        </button>
 
+        <button onClick={handleIncrement} disabled={isPending}>
+            ➕ {isPending ? "Updating..." : "Increment"}
+        </button>
+        <button onClick={handleDecrement} disabled={isPending}>
+            ➖ {isPending ? "Updating..." : "Decrement"}
+        </button>
     </>
 }
