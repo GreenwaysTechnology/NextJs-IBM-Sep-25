@@ -4803,18 +4803,6 @@ Generated HTML pages will then be reused on each request. It can be cached by CD
 
 In Next.js , you can statically generate pages "with data or without data"
 
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-										SSG -Static Site Generation
-...........................................................................................................................................................................................................................................
-
-if pages uses Static Generation, the page html is generated at  "Build time"
-
-When you run "next build" , during that time, pages are generated.
-
-Generated HTML pages will then be reused on each request. It can be cached by CDN.
-
-In Next.js , you can statically generate pages "with data or without data"
-
 √ What is your project named? ... ssg-app
 √ Would you like to use TypeScript? ... No / Yes
 √ Which linter would you like to use? » None
@@ -5020,8 +5008,7 @@ export async function generateStaticParams() {
     brand: p.brand,
     id: p.id.toString(),
   }));
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-										&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 												SEO Features
 ...........................................................................................................................................................................................................................................
 
@@ -5170,7 +5157,6 @@ export async function generateStaticParams() {
     });
 }
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-		         					&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 		         						 How to improve loading performance
 .....................................................................................................................................................................................................................................
 
@@ -5291,3 +5277,50 @@ export default function Dashboard() {
 
     </div>
 }
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									API calls and Streaming
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+src/app/posts/page.js
+import React, { Suspense } from "react";
+
+//component 
+export async function Posts() {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        cache: 'no-store'
+    })
+    const posts = await res.json()
+    return <ul className="space-y-2">
+        {posts.slice(0, 5).map(post => {
+            return <li className="p-2 border rounded-lg shadow-sm" key={post.id}>
+                <h3 className="font-bold">{post.title}</h3>
+                <p className="text-sm text-gray-600">{post.body}</p>
+            </li>
+        })}
+    </ul>
+}
+
+const Welcome = React.lazy(() => {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, 10000, import('../components/greeter'))
+    })
+})
+
+export default function PostsPage() {
+
+    return <div className="p-6">
+        <h1 className="text-xl font-bold mb-4">Posts (Heading)</h1>
+        {/* wrap Posts Component into suspense */}
+        <Suspense fallback={<p className="text-blue-600 font-bold">Posts Loading....</p>}>
+           		 <Posts />
+        </Suspense>
+        <Suspense fallback={<p className="text-blue-600 font-bold">Welcome Loading....</p>}>
+            <Welcome />
+        </Suspense>
+        <h2>
+            Footer
+        </h2>
+    </div>
+
+}
+
