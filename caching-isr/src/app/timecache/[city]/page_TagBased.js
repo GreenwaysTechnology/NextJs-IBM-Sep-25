@@ -11,11 +11,6 @@ export async function getTime() {
     return await response.json()
 }
 
-export async function generateStaticParams() {
-    return [{
-        city: 'Kolkata'
-    }]
-}
 
 export default async function TimeCachePage() {
     const data = await getTime()
