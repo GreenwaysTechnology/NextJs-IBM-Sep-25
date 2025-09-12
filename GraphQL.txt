@@ -1,0 +1,2921 @@
+...............................................................................................................................................................................................................	
+											GraphQL
+...............................................................................................................................................................................................................
+What is GraphQL?
+	GraphQL is a "new API" standard that provides a more efficient, powerful and flexible alternative to REST.
+
+API: Application Programming interface
+..................................................................
+
+API means a method or function.
+method or function get input and return something, sometimes it may not.
+method represents biz logic - computation,reading,writing,removing,modifiying
+
+How apis are encapsulated?
+
+ In object oriented programming, apis are grouped into "Objects" or classes.
+
+In oop, object communicates each other.one object calls method of other object 
+ "To get data"/to send data.
+
+Types of api:
+.............
+ types of api are classified based on their representation
+
+if apis are with in single process/runtime
+
+ "Local Api"
+
+class order{
+
+}
+class customer{
+   private Order order
+
+  getOrders(){
+     order.getOrder()
+  }
+}
+if two methods are communicated which are encapsulated within single runtime - local apis.
+
+
+if apis are communicating across the runtime either with in same machine, or same network or internet
+
+"Remote apis"
+....................................................................................
+				RPI -Remote Procedure Invocation
+....................................................................................
+
+RPI Technologies:
+
+1.c based rpi - first rpi
+2.corba - common object request broker arch
+3.rmi - remote method invocation - pure java technologies
+3.web services
+
+
+Web Services:
+ 
+ Based on internet rpi technologies
+
+client(can be any program any language)---talks to remote program called server--via http protocol---(web containter)-hosts program
+
+Types of webservice
+
+1.soap - xml based
+2.rest  - data independent
+ 
+HTTP based api - Web service:
+.............................
+ rest api
+
+RPC based api technologies
+
+ "grpc" is another api technologies
+...................................................................................
+			
+Modern api technologies:
+
+1.REST API
+2.Grpc API
+3.Graphql API
+....................................................................................
+				History of GraphQL or Why GraphQL
+....................................................................................
+
+Rest spec is based on spec called REST spec
+https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
+
+REST:
+   REST has not been designed to be 'user centric' rather than data centric...
+
+User:
+  User means biz or domain.
+
+if you define any api, which returns data set eg: if you query an api called products
+
+products may have so many fields, i don't want all fields which exposed by the api...
+
+GET  /api/products
+
+ =>[{
+  ...
+ }]
+
+Since REST not able to solve all types of user biz requirements, Facebook was looking another solution to get data based "user centric" not based on "data centric"
+
+................................................................................................................................................................................................................
+		         						The birth of GraphQL
+..............................................................................................................................................................................................................
+
+At its core, GraphQL enables "declarative data fetching" where a client can specify exactly what data it needs from an API.
+
+ "Instead of multiple endpoints that return fixed data structures", a GraphQL server only exposes a single endpoint and responds with precisely the data a client asked for.
+
+ GraphQL one End Point for "Enter domain", Each Domain has its own CURD operations
+
+
+
+				     |-------Product -Read,Save,Update,Delete
+				     |-------Customer-Read,Save,Update,Delete
+  Client-------Single Endpoint ------|-------Payment-Read,Save,Update,Delete
+				     |-------Inventory-Read,Save,Update,Delete
+	
+
+REST endpoints:
+
+GET /api/products
+POST /api/products
+PUT /api/products/id
+DELETE /api/products/id
+
+GET /api/customers
+POST /api/customers
+PUT /api/customers/id
+DELETE /api/customers/id
+
+
+...............................................................................................................................................................................................................
+		  					 Request and Response Model in REST
+
+http
+ GET   /api/customers-----------> REST server
+            <-------JSON/XML/PDF/etc....
+
+ POST   /api/customers-----------> REST server
+            <-------JSON/XML/PDF/etc....
+
+............................................................................................................................................................................................................
+				 	      			Request and Response Model in GraphQL
+...........................................................................................................................................................................................................
+
+http
+POST   /graphql-----------> GraphQL server
+            <-------JSON
+
+..........................................................................................................................................................................................................................................
+					 				How to begin with GraphQL
+..........................................................................................................................................................................................................................................
+
+GraphQL is platform and language independent.
+
+GraphQL Can be classified into two category
+
+1.Client side - How to send data(Request) to the GraphQL server.
+  in order to send data from the client face book published one spec called
+   "GraphQL Query language spec"
+
+2.Server side - How to build graph(object tree) from the data sources
+    "GraphQL Schema language spec"
+
+.....................................................................................	.......................................................................................................................
+						   GraphQL request and response model
+..............................................................................................................................................................................................................
+
+Declarative Programming:
+
+What you write, you have to get the same structure.
+
+The Query request is more readable, declarative.  Which  mimics the JavaScript object literal syntax.
+
+js object:
+
+ let user =  {
+     id:1,
+     name:'joe'
+     friends: [
+        'bar','foo'
+     ]
+  } 
+
+GraphQL basic request structure
+
+GraphQL Request payload : GraphQL Query
+.............................................................
+
+GraphQL Client 
+
+POST /endpoint
+
+
+  {
+     id
+     name
+     friends {  ----------------------------->GraphQL Server
+        name
+     }
+  }
+
+Response: JSON
+ {
+     "id":1,
+     "name":"joe"
+     "friends": [      <----------------------------- GraphQLAPIServer
+        "bar","foo"
+     ]
+  } 
+.................................................................................................................................................................................................................
+				 				REST AND CURD
+
+Operations Type
+
+GET ------Read
+POST -----CREATE
+PUT ------UPDATE
+DELETE----Remove
+...............................................................................................................................................................................................................
+		    					      GRAPHQL And CURD
+
+GraphQL uses only URL which exposes Service
+
+
+  {
+     id
+     name
+     friends { -----------HTTP POST------------------> GraphQLServer
+        name
+     }
+  } 
+
+Since we have only one end point, how to Identify the different operations like create, read ,update ,delete.
+
+		Thats where graphql offers "Client language called GraphQL Query language"
+
+GraphQL language offers syntax.
+
+Operation Types:
+
+1.Query
+  read
+2.mutation
+   create, update, delete
+3.subscription
+   Streaming
+
+query - a read only fetch
+mutation- a write followed by read
+subscription- a long live request that fetches data in response to source events
+............................................................................................................................................................................................................
+                 						GraphQL Query language specification
+..........................................................................................................................................................................................................
+
+Concepts:
+
+=>Query encapsulation
+=>Query header
+=>Query api
+=>fields
+=>arguments
+=>aliases
+=>fragments
+=>variables
+=>directives
+=>mutations
+=>inline fragments
+
+if you want to learn query language we need api.
+
+i am going to use mock apis.
+
+https://countries.trevorblades.com/
+
+Client tools:
+
+1.post man
+2.online browser based tool.
+ https://studio.apollographql.com/sandbox/explorer
+
+We are going to use "Apollo GraphQL" online tool.
+
+GraphQL query language has syntax:
+
+1.Selection Set
+
+  selectionSet  {Selection} => Query Encapsulation.
+
+selectionSet could be "query, mutation, subscription"
+
+ query  {Selection}
+  or
+ mutation  {Selection}
+  or
+ subscription  {Selection}
+
+Selection:
+
+ apiname (method)
+    returns
+     -fields
+     -fragment spread
+     -inline fragment
+
+syntax
+  api {
+    field1
+    fiedl2
+    field3
+  }
+
+Full eg with selection set
+
+query {
+ api {
+    field1
+    fiedl2  --------------------->Server------response-json
+    field3
+ }
+ }
+
+selection set is "query" - to read 
+api - name of the method
+fields means the data variables
+
+Operation and Selection Set
+
+//read =>GET
+query {
+person{
+  firstname
+  lastname
+  age
+ }
+}
+
+//Write
+mutation createUser(params){
+  createuser(params) {
+     id
+     name
+  }
+}
+//streaming
+subscription getPriceQuote(params) {
+ getPrice(params) {
+   price
+   name
+ }
+ 
+}
+................................................................................
+
+Use Case: Simple Query
+
+# Request
+query {
+  countries {
+    name
+  }
+}
+
+
+Response:
+{
+  "data": {
+    "countries": [
+      {
+    
+        "name": "Andorra"
+      },
+      {
+      
+        "name": "United Arab Emirates"
+      },
+      {
+        
+        "name": "Afghanistan"
+      },
+     
+    ]
+  }
+}
+.................
+
+More fields:
+............
+
+Use case :How to request more fields
+
+# Request
+query {
+  countries {
+    name
+    code 
+    capital
+    currency
+    emoji
+    
+  }
+}
+Response:
+
+{
+  "data": {
+    "countries": [
+      {
+        "name": "Andorra",
+        "code": "AD",
+        "capital": "Andorra la Vella",
+        "currency": "EUR",
+        "emoji": "🇦🇩"
+      },
+      {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "capital": "Abu Dhabi",
+        "currency": "AED",
+        "emoji": "🇦🇪"
+      },
+  ]
+ }
+}
+....................................................................................
+			    Query Syntax
+...................................................................................
+
+1.with query  keyword
+query {
+  countries {
+    name
+    code 
+    capital
+    currency
+    emoji
+    
+  }
+}
+2.without query keyword
+# Request
+{
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+  }
+}
+
+3.Query with "Header" - Query Header
+
+ Query header is just dummy name to idenfity the type of query.
+ This looks like "methodName",
+ Which can any name.
+
+# Request
+query GETCounterInfo {
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+  }
+}
+.............................................................................................................................................................................................................
+									Nested Fields
+.............................................................................................................................................................................................................
+
+REST:
+
+GET	/posts
+GET	/posts/1
+GET	/posts/1/comments
+
+Here comments is nested data structure.
+
+Use case: Query can ask nested data.
+
+# Request
+query GETCounteryInfo {
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+    states {
+      code
+      name
+    }
+  }
+}
+Response:
+"data": {
+    "countries": [
+      {
+        "name": "Andorra",
+        "code": "AD",
+        "capital": "Andorra la Vella",
+        "currency": "EUR",
+        "emoji": "🇦🇩",
+        "states": []
+      },
+      {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "capital": "Abu Dhabi",
+        "currency": "AED",
+        "emoji": "🇦🇪",
+        "states": []
+      }
+   }
+}
+  .............................................................................................................................................................................................................
+							Args and parameters
+...............................................................................................................................................................................................................
+
+What if i want to get data based on some condition or conditions
+
+Parameters can be either hardcoded or dynamic parameter
+
+Syntax:
+query getUser { 
+     user(variableName:value) {
+	fields
+     }
+}
+
+Hardcoded or static parameter
+.............................
+eg:
+query CountryByCode {
+   country(code:"IN"){
+     capital
+     name
+     currency
+   }
+}
+
+Response:
+{
+  "data": {
+    "country": {
+      "capital": "New Delhi",
+      "name": "India",
+      "currency": "INR"
+    }
+  }
+}
+..........................................................................................................................................................................................................	
+								  Dynamic parameters
+..........................................................................................................................................................................................................
+
+Variables:
+ Variables are place holder to have dynamic values which are passed from outside.
+  in case of client app, you can pass via programs.
+
+How to use variables?
+  Variables are used with "$VariableName" convention.
+
+Steps:
+1.Declare variable with data type as part of the query header
+
+Syntax:
+ query queryHeader($variableName:DataType){
+    apiName(variableName:$variableName){
+     fields
+   }
+ }
+
+Data Types:
+ GraphQL provides language independent data types.
+
+Data Types:
+Scalar types(primitives)
+ ID
+ String
+ Float
+ Int
+ Enum
+ Boolean
+
+Complex Types(Object Types)
+ Objects-Customer,Country,Continent
+ Input- Special complex type-Primarily for passing complex input which is eq to dto
+
+EG:
+query CountryByCode($code:ID!) {
+   country(code:$code){
+     capital
+     name
+     currency
+   }
+}
+
+variables:
+{
+  "code": "US"
+}
+Response:
+{
+  "data": {
+    "country": {
+      "capital": "Washington D.C.",
+      "name": "United States",
+      "currency": "USD,USN,USS"
+    }
+  }
+}
+
+Default Values:
+
+query GETCOUNTRY_BYID($code:ID!="IN") {
+  country(code:$code) {
+    name
+    capital
+    currency
+    phone
+  }
+}
+with out variables we get india information
+
+with variables we get information based on variable value
+variables:
+{
+  "code": "US"
+}
+....................................................................................
+How to pass complex types or input types?
+
+query:
+query GETLANGUAGE_INFO($filter:LanguageFilterInput) {
+   languages(filter:$filter){
+     code 
+     name
+   }
+}
+variables:
+{
+  "filter": {
+    "code": {
+      "eq": "en"
+    }
+  }
+}
+{
+  "data": {
+    "languages": [
+      {
+        "code": "en",
+        "name": "English"
+      }
+    ]
+  }
+}
+
+..............................................................................................................................................................................................................
+									Aliases
+............................................................................................................................................................................................................
+
+incase if you want field name differently or if you think that some duplicate fields are coming.
+
+id - userId
+
+Field  aliases gives a dummy name for keys.
+
+without aliases:
+
+{
+ user(id:1){
+   id
+   name
+ }
+}
+
+Response:
+{
+ "data" : {
+   "user": {
+       "id":1,
+       "name:: "Subramanian"
+     }
+ }
+}
+With aliases:
+ {
+   subramanian:user(id:1){
+     id
+     name
+    }
+ }
+
+{
+ "data" : {
+   "subramanian": {
+       "id":1,
+        "name:: "Subramanian"
+     }
+ }
+}
+
+eg:
+query GETLANGUAGE_INFO($filter:LanguageFilterInput) {
+  mylang:languages(filter:$filter){
+     languagecode:code 
+     languageName:name
+   }
+}	
+variables:
+{
+  "filter": {
+    "code": {
+      "eq": "en"
+    }
+  }
+}
+Response:
+
+{
+  "data": {
+    "mylang": [
+      {
+        "languagecode": "en",
+        "languageName": "English"
+      }
+    ]
+  }
+}
+..............................................................................................................................................................................................................
+										Fragments
+.............................................................................................................................................................................................................
+
+What if i have some fields, duplicated across many apis, in order to avoid duplicates fragments are used.
+
+Without Fragment
+Syntax:
+
+query {
+  user(id:2){
+   
+     friends {
+      id
+      name
+      pic
+     }
+    mutalfriends {
+      id
+      name
+      pic
+     }
+  }
+
+}
+With Fragments:
+
+query {
+  user(id:2){
+   
+     friends {
+        ...friendsFields
+     }
+     mutalfriends {
+        ...friendsFields
+     }
+  }
+
+}
+framents friendsFields on User{
+      id
+      name
+      pic
+}
+
+eg:
+query countries {
+  countries {
+     ...CountryFields
+  }
+}
+fragment CountryFields on Country{
+  code
+  name
+}
+{
+  "data": {
+    "countries": [
+      {
+        "code": "AD",
+        "name": "Andorra"
+      },
+      {
+        "code": "AE",
+        "name": "United Arab Emirates"
+      }
+    ]
+ }
+..............................................................................................................................................................................................................
+			   						Directives
+...........................................................................................................................................................................................................
+Directives are built in functions which provides some utilities.
+
+Syntax:
+   @directiveName(params)
+
+GraphQL supports two basic directives
+
+1.@include(if:boolean)
+2.@skip(if:boolean)
+  
+  These directives are used to include or exclude fields automatically.
+
+@include(if:Boolean)
+   only include "this field" in the result if the arg is true
+@skip(if:Boolean)
+   exclude /skip "this field" in the result if the arg is true.
+
+Syntax:
+
+query GetProfileHeader{
+    getProfile($id:Int,$withFriends:Boolean=false) {
+	profile(id:$id) {
+	   id
+           name
+	   friends @include(if:$withFriends)
+	
+        }
+
+    }
+}
+eg:
+query LanguageInfo($code: ID! = "en", $rtl: Boolean! = false) {
+  language(code: $code) {
+    name
+    native @include(if: $rtl)
+  }
+}
+
+with skip
+query LanguageInfo($code: ID! = "en", $rtl: Boolean! = false) {
+  language(code: $code) {
+    name
+    native @skip(if: $rtl)
+  }
+}
+
+variables:
+{
+  "code": "en",
+  "rtl": true,
+}
+Response:
+
+  "data": {
+    "language": {
+      "name": "English",
+      "native": "English"
+    }
+  }
+}
+.............................................................................................................................................................................................................
+			    					  Mutation
+..........................................................................................................................................................................................................
+
+How to send payload (data) to GraphQL api?
+
+create update delete
+
+IN REST
+
+HTTP VERB                   Convention in Server
+
+POST                          save
+
+DELETE			  remove
+
+PUT                           update
+
+In GraphQL there is only one end point ,only one URL
+
+
+HTTP VERB       GraphQL verb           Convention in Server
+
+POST             mutation                  save                   
+
+POST             mutation                  update
+
+POST             mutation                  remove
+
+POST             query                        read
+
+POST             subscription              read +Streaming
+                
+                   
+Testing:
+ 
+API url :
+
+https://graphqlzero.almansi.me/api
+                  
+create/insert
+
+mutation CREATEPOST($input:CreatePostInput!){
+  createPost(input:$input){
+     id 
+     title
+     body 
+  }
+}
+
+input:
+{
+  "input": {
+    "title": "Learn graphql",
+    "body": "Grapqhl is one the api technology"
+  }
+}
+Response:
+{
+  "data": {
+    "createPost": {
+      "id": "101",
+      "title": "Learn graphql",
+      "body": "Grapqhl is one the api technology"
+    }
+  }
+}
+
+UPDATE:
+........
+mutation UPDATEPOST($updatedPostId: ID!, $input: UpdatePostInput!) {
+  updatePost(id: $updatedPostId, input: $input) {
+    id
+    title
+    body
+  }
+}
+
+{
+  "updatedPostId": "1",
+  "input": {
+     "title":"Learn grpqhl with Apollo"
+  }
+}
+
+Response:
+{
+  "data": {
+    "updatePost": {
+      "id": "1",
+      "title": "Learn grpqhl with Apollo",
+      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    }
+  }
+}
+
+Delete:
+........
+mutation DELETEPOST($id:ID!){
+  deletePost(id: $id)
+}
+
+{
+  "id": "1"
+}
+
+Response:
+{
+  "data": {
+    "deletePost": true
+  }
+}
+........................................................................................................................................................................................................................................
+						 		Server Side
+........................................................................................................................................................................................................................................
+ 			  GraphQL API Implementation
+.....................................................................................
+In order to build apis we have many technologies
+
+1.REST
+2.Graphql
+3.Grpc
+
+How to build REST apis?
+
+  Restfull webservices are built based on "Resources" in the Problem Domain.
+
+Resources are represented by "Object" which expose Data.
+
+Eg:
+ CustomerResource, OrderResource, PaymentResource, CourseResource
+
+Resources are identified by "URL" 
+  => /api/customers GET | POST | DELETE | UPDATE
+
+In GraphQL apps are built based on "Models" Which are objects
+
+What ever language we have to think in terms of Objects
+
+...................................................................................
+GraphQL Schema Language            Programming Language
+....................................................................................
+  Schema                                          class or Object
+
+  Customer                                      class Customer {} | let Customer={}
+
+Object shape is described by "Schema". 
+
+Schema is nothing but "Plan"
+
+In GraphQL context, the "Problem domain"  is represented by "Schema language"
+.......................................................................................................................................................................................................................................
+								SDL - Schema Definition Language
+......................................................................................................................................................................................................................................
+SDL Core concepts:
+............................
+
+1.Type System:
+...............
+   The Type system defines the platform and language independent data types which describe what data can be quired by client.
+
+Schema Type Systems =========================>Programming language Type System
+eg:
+   String           =============================>javascript -string
+
+    Int             ==============================>javascript -number
+
+Client                                      						  Server
+
+ Query ----|SDL-----send request --------    |SDL---Models--->bizlogic(services|	 resolvers)-->Data sources
+
+					  |---->java,kotlin,scala,c#,python -jvm
+					  |---->js,typescript -node
+			SDL implementation|---->
+					  |---->
+					
+	
+
+How to start with SDL?
+
+We need to define type.
+
+syntax:
+ type TypeName{
+    field:Type
+ }
+IN SDL, there is root type, every type is derived from the root type.
+
+type Schema {
+  query:Query
+  mutation:Mutation
+  subscription:Subscription
+}
+
+type Query{}
+
+type Mutation{}
+
+type Subscription{}
+
+type Query {
+  #apis:ReturnType
+  hello:String
+  #api with arg
+  greet(message:String):String
+  user:User
+  customers:[Customer]
+}
+
+type Customer {
+  id:ID
+  name:String
+}
+
+type User{
+ id:ID
+ name:String
+ status:Boolean
+}
+
+Client side 
+
+query {
+ user {
+  id
+  status
+ }
+}
+
+
+type Mutation { 
+ #apis
+ createUser(user:User):User
+ updateUser(id:ID,user:User):User
+}
+
+client
+mutation CRATE_USER($user:User) {
+  createUser(user:$user){
+    id
+    status
+  }
+....................................................................................
+				 Data types In SDL
+.....................................................................................
+
+1.Scalar Types
+   Scalar are like primitives types in the programming languages
+
+1.Int - 32 Bit Signed Integer
+2.String - UTF-8 
+3.Boolean - true or false
+4.Float - Signed Double
+5.ID - String but Serialized string - For unique identification
+
+2.Custom Types/Reference Types/ Object types
+ Similar to classes in object oriented languages like java, C++,C#
+
+type User {
+ id:Int
+ firstName:String
+ lastName:String
+ status:Boolean
+ points:Float
+}
+
+Object can have other Object Type:
+..................................
+  Like has a relationship / Dependency injection
+
+type Address { 
+ city:String
+ state:String
+ country:String
+}
+
+type User {
+ id:Int
+ firstName:String
+ lastName:String
+ status:Boolean
+ points:Float
+ address:Address
+}
+
+Client side 
+
+query {
+ user {
+  id
+  status
+  address  {
+    city
+  }
+ }
+}
+
+....................................................................................
+			Handling null and not null values
+....................................................................................
+
+Client query with data
+
+query {
+  user {
+    name    ------------------> response {name:'Subramanian'}
+  }
+}
+
+Client query without data
+
+query {
+  user {
+    name    ------------------> response {name:null}
+  }
+}
+
+Client is expecting that don't want to include null, if server Includes null , i have to throw an exception.
+ =>Not null field
+
+Syntax:
+   fieldName:Type!
+
+! -Not Null
+type Address { 
+ city:String
+ state:String
+ country:String
+}
+
+type User {
+ id:Int!
+ firstName:String!
+ lastName:String!
+ status:Boolean
+ points:Float
+ address:Address
+}
+
+Here, id ,firstName, lastName cant be null, if there is null value, the server will throw exception.
+
+....................................................................................
+				Collections - List of similar values
+....................................................................................
+The field may have more than one value
+
+ fieldName:[DataType]
+
+Data Type could be scalar or Object Type
+
+eg:
+  products:[Product]
+  users:[User]
+  skills:[String]
+.....................................................................................
+			 Collections and Not Null
+.....................................................................................
+ [{id:1,name:'33'},{id:2,name:'test'},null,{id:3,name:'test'} ]
+
+ languages:[Language!] - Language cant null  [user,,user,null,]
+
+ languages:[Language]! - Array cant null languages:null
+
+ languages:[Language!]! - Language and Array cant be null
+........................................................................................................................................................................................................................................
+								Advanced Types
+.......................................................................................................................................................................................................................................
+
+=>Mutation
+=>Subscription
+=>Input
+=>Enum
+=>Union
+=>Interface
+
+Mutation:
+ For Add,update,delete operations
+
+type Mutation {
+  createUser(id:ID,firstName:String,lastName:String,age:Int):User
+  updatUser(id:ID!,user:User):User
+  removeUser(id:ID):User
+}
+.......................................................................................................................................................................................................................................
+                         									Input
+...................................................................................................................................................................................................................................
+Input type are special object type that allow you to provide hierarchical data as args to fields
+
+type Mutation {
+  createUser(id:ID,firstName:String,lastName:String,age:Int):User
+}
+
+In the above code, you  have passed induvial fields, which is not going to be good.
+
+Can i pass user type
+
+type User {
+ id:ID
+ firstName:String
+ lastName:String
+ age:Int
+}
+type Mutation {
+  createUser(user:User):User
+}
+
+Instead of passing User type, GraphQL offers special object type input
+
+input CreateUserInput {
+ id:ID
+ firstName:String
+ lastName:String
+ age:Int
+}
+
+type Mutation {
+  createUser(user:CreateUserInput):User
+}
+.....................................................................................
+			 Enums
+.....................................................................................
+
+An Enum is similar to scalar type, but its legal values are defined in the schema
+
+enum Gender {
+ MALE
+ FEMALE
+ THIRD
+}
+
+type Query {
+ gender:Gender
+}
+
+.......................................................................................................................................................................................................................................
+									 GraphQL Application dev
+........................................................................................................................................................................................................................................
+
+You can write code in any language.
+
+Java:
+1.graphql-java
+2.SpringBoot with GraphQL
+3.DGS Framework-Netflix
+etc...
+
+JavaScript:
+
+1.graphql-js.js
+  The JavaScript reference implementation for GraphQL, a query language for APIs created by Facebook.
+
+2.Apollo
+  It is platform for building enterprise GraphQL apps
+  The core of Apollo framework is written on the graphql.js and express.js
+
+GraphQL application can be built using two arch
+ 1.monolith arch
+ 2.Microservices arch.
+
+Apollo Core concepts:
+
+  SuperGraph:
+      Collection of small graphs called subgraph
+      A unified network of your organizations microservices and their data sources
+      -All Composed into a single distributed API.
+
+  SubGraph:
+      It represents a single Graph application
+
+  Graph OS:
+     It is cloud platform which hosts supergraph and router
+
+   Router :
+      It is composition api , clients will communicate only Router
+     Router internally stiches the schema for data retrieval.
+
+Components of Apollo:
+.....................
+1.Apollo Server : node js server written in express.js
+2.Schema definitions - SDL
+3.Resolvers - Schema Implementations like queries,mutations,subscription
+4.Data Sources -  Database, rest api, any other apis.
+
+Apollo code can be written in "JavaScript or typescript".
+
+....................................................................................................
+			Apollo Project setup
+....................................................................................
+
+Required Softwares:
+
+1.node.js latest version
+2.vscode
+
+Project setup :
+
+Step 1:
+\frontend>mkdir apollo-gettingstarted
+
+Step 2:
+\frontend>cd apollo-gettingstarted
+
+\apollo-gettingstarted>npm init --yes
+{
+  "name": "apollo-gettingstarted",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
+
+Step 3:
+\apollo-gettingstarted>code .
+
+Step 4:install apollo server dependencies
+
+npm install @apollo/server graphql
+
+Step 5: install type script dependencies
+
+npm i --save-dev typescript @types/node
+
+  "dependencies": {
+    "@apollo/server": "^4.10.5",
+    "graphql": "^16.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "typescript": "^5.5.4"
+  }
+
+script:
+In order to compile and run dev server in watch mode.
+
+npm install --save-dev tsc-watch
+
+package.json
+  "scripts": {
+    "start": "tsc-watch --onSuccess \"node ./dist/index.js"
+  },
+
+
+
+Lets verify settings:
+
+src/index.ts
+ console.log('Hello GraphQL')
+
+G:\Wipro\frontend\apollo-gettingstarted>npm start
+
+SDL implementation:
+
+Steps:
+
+1.Define schema
+2.Write biz logic for schema - Resolver
+3.Start Apollo Server
+
+
+Define schema:
+
+There is two to define schema in apollo
+1.inside code 
+2.outside code as separate file.
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//1.Define Schema 
+const typeDefs = `
+ #Define api
+ type Query{
+   hello:String    
+ } 
+
+`
+//2.Biz logic for hello Query : Resolvers
+const resolvers = {
+    Query: {
+        hello() {
+            return "Hello Graphql"
+        }
+    },
+    //Mutation
+    //Subscription
+}
+//3.We need to deploy the schema and bind with resolver 
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+
+//4.Start web server (Express.js)
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Ready ${url}`)
+
+
+Client code:
+query HelloQuery {
+  hello
+}
+
+Response:
+{
+  "data": {
+    "hello": "Hello Graphql"
+  }
+}
+...........................................................................................................................................................
+
+Multiple API:
+...............
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Define schema
+const typeDefs = `
+type Query{
+    hello:String
+    active:Boolean
+    value:Int
+}
+
+`
+//Biz logic for api (hello)
+const resolvers = {
+    //Query 
+    Query: {
+        hello() {
+            return "Hello"
+        },
+        active() {
+            return true
+        },
+        value() {
+            return 100
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+client side:
+
+query HelloQuery {
+  active
+}
+
+{
+  "data": {
+    "active": true
+  }
+}
+...................................................................................
+			Object Types and Queries
+....................................................................................
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Define schema
+const typeDefs = `
+
+type User {
+    id:ID
+    firstName:String
+    lastName:String
+    age:Int
+    points:Float
+    status:Boolean
+}
+
+type Query{
+   user:User    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        user() {
+            return {
+                id: 1,
+                firstName: "Subramanian",
+                lastName: "Murugan",
+                age: 10,
+                points: 100,
+                status: true
+            }
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+
+Client Side:
+
+query getUserInfo {
+  user {
+    id
+    firstName
+    lastName
+    points
+    status
+  }
+}
+Response:
+{
+  "data": {
+    "user": {
+      "id": "1",
+      "firstName": "Subramanian",
+      "lastName": "Murugan",
+      "points": 100,
+      "status": true
+    }
+  }
+}
+...........................................................................................................................................................
+.....................................................................................
+			  Null and Not Null
+....................................................................................
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Define schema
+const typeDefs = `
+
+type User {
+    id:ID
+    firstName:String
+    lastName:String
+    age:Int
+    points:Float
+    status:Boolean
+}
+
+type Query{
+   user:User!    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        user() {
+            return null;
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+
+In the above code
+
+The schema defines rule that user api's return type must not be null.
+type Query{
+   user:User!    
+}
+In the resolver if you return null
+
+const resolvers = {
+    //Query 
+    Query: {
+        user() {
+            return null;
+        }
+    }
+
+}
+
+Client side:
+query getUserInfo {
+  user {
+    id
+    firstName
+    lastName
+    points
+    status
+  }
+}
+
+Response:
+{
+  "data": {},
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Query.user.",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": [
+        "user"
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "stacktrace": [
+          "Error: Cannot return null for non-nullable field Query.user.",
+          "    at completeValue (E:\\session\\Prudentia\\B2\\apollo-gettingstarted\\node_modules\\graphql\\execution\\execute.js:605:13)",
+          "    at executeField (E:\\session\\Prudentia\\B2\\apollo-gettingstarted\\node_modules\\graphql\\execution\\execute.js:500:19)",
+          "    at executeFields (E:\\session\\Prudentia\\B2\\apollo-gettingstarted\\node_modules\\graphql\\execution\\execute.js:414:22)",
+          "    at executeOperation (E:\\session\\Prudentia\\B2\\apollo-gettingstarted\\node_modules\\graphql\\execution\\execute.js:344:14)",
+          "    at execute (E:\\session\\Prudentia\\B2\\apollo-gettingstarted\\node_modules\\graphql\\execution\\execute.js:136:20)",
+          "    at executeIncrementally (file:///E:/session/Prudentia/B2/apollo-gettingstarted/node_modules/@apollo/server/dist/esm/incrementalDeliveryPolyfill.js:21:12)",
+          "    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "    at async execute (file:///E:/session/Prudentia/B2/apollo-gettingstarted/node_modules/@apollo/server/dist/esm/requestPipeline.js:226:37)",
+          "    at async processGraphQLRequest (file:///E:/session/Prudentia/B2/apollo-gettingstarted/node_modules/@apollo/server/dist/esm/requestPipeline.js:155:32)",
+          "    at async internalExecuteOperation (file:///E:/session/Prudentia/B2/apollo-gettingstarted/node_modules/@apollo/server/dist/esm/ApolloServer.js:603:16)"
+        ]
+      }
+    }
+  ]
+}
+
+What if fields are not null?
+type User {
+    id:ID!
+    firstName:String
+    lastName:String
+    age:Int
+    points:Float
+    status:Boolean
+}
+
+In the resolver:
+Query: {
+        user() {
+            // return null;
+            return {
+               // id: null,                 
+                firstName: "Subramanian",
+                lastName: "Murugan",
+                age: 10,
+                points: 100,
+                status: true
+            }
+
+        }
+    }
+
+if you don't add or field value is null, then server will throw an error.
+............................................................................................................................................................
+				 Collections
+....................................................................................
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Mock users
+const USERS = [
+    {
+        id: 1,
+        firstName: "Subramanian",
+        lastName: "Murugan",
+        age: 10,
+        points: 100,
+        status: true
+    },
+    {
+        id: 2,
+        firstName: "Geetha",
+        lastName: "Subramanian",
+        age: 30,
+        points: 900,
+        status: true
+    },
+    {
+        id: 4,
+        firstName: "Hema",
+        lastName: "Chandran",
+        age: 30,
+        points: 900,
+        status: true
+    }
+
+]
+
+//Define schema
+const typeDefs = `
+
+type User {
+    id:ID!
+    firstName:String!
+    lastName:String
+    age:Int
+    points:Float
+    status:Boolean
+}
+
+type Query{
+   users:[User]    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        users() {
+            return USERS
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+Client Side:
+
+query GetUsers {
+  users {
+    id
+    firstName
+    lastName
+    age
+  }
+}
+
+Response:
+{
+  "data": {
+    "users": [
+      {
+        "id": "1",
+        "firstName": "Subramanian",
+        "lastName": "Murugan",
+        "age": 10
+      },
+      {
+        "id": "2",
+        "firstName": "Geetha",
+        "lastName": "Subramanian",
+        "age": 30
+      },
+      {
+        "id": "4",
+        "firstName": "Hema",
+        "lastName": "Chandran",
+        "age": 30
+      }
+    ]
+  }
+}
+................................................................................
+			   Collections and null
+.................................................................................
+
+Syntax:
+  
+  products:[Product!]
+  products:[Product]! 
+  products:[Product!]!
+
+products:[Product!]
+
+products:null - valid
+products:[] -valid
+products:[{id:1}] -valid
+products: [{id:1},null] - invalid
+
+
+eg:
+type Query{
+   skills:[String!]    
+}
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            return []
+        }
+    }
+
+}
+
+Client side:
+query getSkills {
+  skills
+}
+{
+  "data": {
+    "skills": []
+  }
+}
+
+const typeDefs = `
+
+type Query{
+   skills:[String!]    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            //return []
+            return ['graphql']
+        }
+    }
+
+}
+Client side:
+query getSkills {
+  skills
+}
+{
+  "data": {
+    "skills": [
+      "graphql"
+    ]
+  }
+}
+...
+
+type Query{
+   skills:[String!]    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            //return []
+            //return ['graphql']
+            return null
+        }
+    }
+
+}
+query getSkills {
+  skills
+}
+{
+  "data": {
+    "skills": null
+  }
+}
+
+...
+const typeDefs = `
+
+type Query{
+   skills:[String!]    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            //return []
+            //return ['graphql']
+            //return null
+            return [null]
+        }
+    }
+
+}
+Response:
+{
+  "data": {
+    "skills": null
+  },
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Query.skills.",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+]
+...................................................................................
+
+products:[String]!
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+
+//Define schema
+const typeDefs = `
+
+type Query{
+   skills:[String]!    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            //return [] -valid
+            //return ['graphql'] -valid
+            //return null - invalid
+            //return [null] //valid
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+query getSkills {
+  skills
+}
+{
+  "data": {
+    "skills": [
+      null
+    ]
+  }
+}
+..................................................................................
+
+products:[String!]!
+ 
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+
+//Define schema
+const typeDefs = `
+
+type Query{
+   skills:[String!]!    
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        skills() {
+            //return [] //-valid
+            //return ['graphql'] //-valid
+            //return null //- invalid
+            return [null] //invalid
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+query getSkills {
+  skills
+}
+
+{
+  "data": {},
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Query.skills.",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+]
+....................................................................................
+			Handling Args and Parameters
+....................................................................................
+
+How to handle args and parameters?
+
+ Resolver function takes four positional optional args.
+
+ fun(parent,args,contextValue,info){
+
+ }
+ 
+ "args" variable is going to hold parameters passed by clients.
+  args value is going to be literal object
+
+.....................................................................................	
+			Not Null with args and return type
+....................................................................................
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Define schema
+const typeDefs = `
+
+type Query{
+  hello(name:String!):String
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        hello(parent, args, contextValue, info) {
+            console.log(args)
+            return `Welcome to ${args.name}`
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+query($name: String!) {
+   hello(name: $name)
+}
+variable
+{
+  "name": null
+}
+
+Response:
+{
+  "data": {},
+  "errors": [
+    {
+      "message": "Variable \"$name\" of non-null type \"String!\" must not be null.",
+      "locations": [
+        {
+          "line": 1,
+          "column": 7
+        }
+      ],
+
+How many parameters you pass, all parameters are stored inside single literal object
+
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Define schema
+const typeDefs = `
+
+type Query{
+  hello(name:String):String
+}
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        hello(parent, args, contextValue, info) {
+            console.log(args)
+            return `Welcome to ${args.name}`
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+ClientSide:
+query($name: String) {
+   hello(name: $name)
+}
+
+{
+  "name": "Subramanian"
+}
+
+Response:
+{
+  "data": {
+    "hello": "Welcome to Subramanian"
+  }
+}
+..................................................................................
+			    How to handle complex args and parameter
+....................................................................................
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Mock users
+const USERS = [
+    {
+        id: 1,
+        firstName: "Subramanian",
+        lastName: "Murugan",
+        age: 10,
+        points: 100,
+        status: true
+    },
+    {
+        id: 2,
+        firstName: "Geetha",
+        lastName: "Subramanian",
+        age: 30,
+        points: 900,
+        status: true
+    },
+    {
+        id: 4,
+        firstName: "Hema",
+        lastName: "Chandran",
+        age: 30,
+        points: 900,
+        status: true
+    }
+
+]
+//Define schema
+const typeDefs = `
+ type User {
+    id:ID!
+    firstName:String
+    lastName:String
+    age:Int
+    points:Float
+    status:Boolean
+ }
+ type Query {
+    users:[User!]!
+    user(id:ID!):User
+ }
+`
+const resolvers = {
+    //Query 
+    Query: {
+        users() {
+            return USERS
+        },
+        user(_, args) {
+            return USERS.find(user => {
+                return user.id === +args.id
+            })
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+
+Client Side:
+query UserById($id: ID!, $userId: ID!) {
+  user(id: $userId) {
+    firstName
+    lastName
+  }
+}
+{
+  "userId": 1
+}
+Response:
+{
+  "data": {
+    "user": {
+      "firstName": "Subramanian",
+      "lastName": "Murugan"
+    }
+  }
+}
+............................................................................................................................................................
+.....................................................................................
+			  Resolver Chains
+.....................................................................................
+
+Resolver chain means combing results of one resolver with in nested resolver.
+
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+
+//mock data
+const USERS = [{
+    id: 1,
+    name: 'A',
+    email: 'a@gmail.com'
+},
+{
+    id: 2,
+    name: 'B',
+    email: 'b@gmail.com'
+},
+{
+    id: 3,
+    name: 'C',
+    email: 'c@gmail.com'
+}
+
+]
+
+//Address
+const ADDRESS = [{
+    city: 'CBE',
+    state: 'TN',
+    id: 1 //link field
+},
+{
+    city: 'BNG',
+    state: 'KA',
+    id: 2 //link field
+},
+{
+    city: 'NY',
+    state: 'NY',
+    id: 3 //link field
+},
+]
+
+//Define schema
+const typeDefs = `
+ type Address {
+    city:String    
+ }
+ type User {
+    id:ID!
+    name:String
+    email:String 
+    address:Address # api
+ }
+ type Query {
+    users:[User!]!
+ }
+`
+const resolvers = {
+    //Query 
+    Query: {
+        users() {
+            return USERS
+        }
+    },
+    User: {
+        address(parent) {
+            console.log(parent)
+            return ADDRESS.find(address => {
+                return address.id === parent.id
+            })
+        }
+    }
+
+}
+const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+
+Client side:
+
+query Users {
+  users {
+    name
+    id
+    address {
+      city
+    }
+  }
+}
+
+Response:
+{
+  "data": {
+    "users": [
+      {
+        "name": "A",
+        "id": "1",
+        "address": {
+          "city": "CBE"
+        }
+      },
+      {
+        "name": "B",
+        "id": "2",
+        "address": {
+          "city": "BNG"
+        }
+      },
+      {
+        "name": "C",
+        "id": "3",
+        "address": {
+          "city": "NY"
+        }
+      }
+    ]
+  }
+}
+.....................................................................................
+			  Context and ContextValue
+.....................................................................................
+
+What is Context?
+ Context is Object which is part of Apollo Server
+
+Why Context?
+ Context can be used to share global data across the application
+
+What type of information we can share?
+
+  Global settings
+  Data Source Connections
+  Authentication headers and tokens
+
+Context object is accessed with help of "context" function which is part of standAloneServer.
+
+if you are working with typescript context object can be "typed"
+
+interface MyContext {
+   token:string
+   dataSource:Object
+}
+
+const server = new ApolloServer<MyContext>({typeDefs,resolvers})
+
+//Context function binding
+
+const {url} = await startStandaloneServer(server,{
+    listen: {
+      port:4000
+    },
+    context:async()=>{
+
+	//context object
+	return {
+	   token:'sometoken'
+   	   dataSource:new Api()
+        }
+	
+    }
+
+ })
+
+How to access context object?
+ 
+  resolver(parent,args,contextValue,info){
+	contextValue.token
+         	
+  }
+..........
+
+....................................................................................
+				Data Sources and Context
+.....................................................................................
+
+What is Data Sources?
+ Where the data is kept.
+
+What can be data source?
+->Databases
+->Another api can be datasource to graphql
+  -REST SERVICE
+  -Grpc Services
+
+We are going to talk to  three data source implementations
+
+1.Mock data data source
+2.REST Data source
+3.Database Data source
+
+....................................................................................
+			Datasources- Fetching Data from Rest api
+....................................................................................
+
+Steps:
+
+In order to connect with REST api, we need to setup local mock rest api.
+
+1.setup local rest api
+
+npm install -g json-server
+
+E:\session\Prudentia\B2>mkdir mockapiserver
+E:\session\Prudentia\B2>cd mockapiserver
+
+E:\session\Prudentia\B2\mockapiserver>db.json
+
+db.json
+{
+    "books": [
+        {
+            "id": 1,
+            "title": "Graphql in Action",
+            "author": "a"
+        },
+        {
+            "id": 2,
+            "title": "Typescript in Action",
+            "author": "b"
+        }
+    ]
+}
+3.start rest api server
+ json-server --watch db.json
+
+.....................................................................................
+
+Graphql setup:
+..............
+
+1.create Service/API class in order to communicate Rest api
+ Apollo provides a special wrapper class to connect with rest api.
+
+npm install @apollo/datasource-rest --save
+
+import { RESTDataSource } from "@apollo/datasource-rest";
+
+//Type class
+export class Book {
+    id: number;
+    title: string
+    author: string
+}
+
+export class BooksAPI extends RESTDataSource {
+    constructor() {
+        super()
+        this.baseURL = "http://localhost:3000/"
+    }
+    //apis
+    async getBooks() {
+        return this.get<Book[]>(`books`)
+    }
+}
+...................
+
+Full code:
+import { RESTDataSource } from "@apollo/datasource-rest";
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Type class
+export class Book {
+    id: number;
+    title: string
+    author: string
+}
+
+export class BooksAPI extends RESTDataSource {
+    constructor() {
+        super()
+        this.baseURL = "http://localhost:3000/"
+    }
+    //apis
+    async getBooks() {
+        return this.get<Book[]>(`books`)
+    }
+}
+//Define schema
+const typeDefs = `
+
+type Book {
+    title:String
+    author:String
+}
+type Query{
+   books:[Book]
+}
+
+`
+//
+const resolvers = {
+    //Query 
+    Query: {
+        books(parent, args, ctx) {
+            return ctx.dataSources.booksAPI.getBooks()
+        }
+    }
+
+}
+
+//context Type
+type MyContext = {
+    dataSources: {
+        booksAPI: BooksAPI
+    }
+}
+
+const server = new ApolloServer<MyContext>({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    },
+    context: async () => {
+        return {
+            dataSources: {
+                booksAPI: new BooksAPI()
+            }
+        }
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+query Books {
+  books {
+    author
+    title
+  }
+}
+{
+  "data": {
+    "books": [
+      {
+        "author": "a",
+        "title": "Graphql in Action"
+      },
+      {
+        "author": "b",
+        "title": "Typescript in Action"
+      },
+      {
+        "author": "c",
+        "title": "Java and GraphQl"
+      }
+    ]
+  }
+}
+....................................................................................
+				 Full CURD operation
+...................................................................................
+import { RESTDataSource } from "@apollo/datasource-rest";
+import { ApolloServer } from "@apollo/server"
+import { startStandaloneServer } from '@apollo/server/standalone'
+
+//Type class
+export class Book {
+    id: number;
+    title: string
+    author: string
+}
+
+export class BooksAPI extends RESTDataSource {
+    constructor() {
+        super()
+        this.baseURL = "http://localhost:3000/"
+    }
+    //apis
+    async getBooks() {
+        return this.get<Book[]>(`books`)
+    }
+    //books by id
+    async book(id: number) {
+        return this.get<Book>(`books/${id}`)
+    }
+    //save
+    async postBook(book: Book) {
+        return this.post<Book>(`books`, { body: book }).then(res => res)
+    }
+    //update 
+    async updateBook(bookId: number, book: Book) {
+        return this.put<Book>(`books/${bookId}`, { body: book }).then(res => res)
+    }
+
+}
+//Define schema
+const typeDefs = `
+
+type Book {
+    id:Int
+    title:String
+    author:String
+}
+type Query{
+   books:[Book]
+   book(id:Int):Book
+}
+input BookInput{
+    id:Int
+    title:String!
+    author:String!
+}
+input BookUpdateInput {
+    title:String!
+    author:String!
+}
+type Mutation {
+    addBook(input:BookInput):Book
+    updateBook(id:Int!,input:BookUpdateInput):Book
+}
+`
+//
+const resolvers = {
+    //Query 
+    Query: {
+        //Books
+        async books(parent, args, ctx) {
+            return ctx.dataSources.booksAPI.getBooks()
+        },
+        //Book by id
+        async book(parent, args, ctx) {
+            const id = +args.id
+            return ctx.dataSources.booksAPI.book(id)
+        }
+    },
+    Mutation: {
+        //create Book
+        async addBook(parent, args, ctx) {
+            const { input } = args;
+            return ctx.dataSources.booksAPI.postBook(input)
+        },
+        //update Book
+        async updateBook(parent, args, ctx) {
+            const { id, input } = args
+            return ctx.dataSources.booksAPI.updateBook(+id, input)
+        }
+    }
+
+}
+
+//context Type
+type MyContext = {
+    dataSources: {
+        booksAPI: BooksAPI
+    }
+}
+
+const server = new ApolloServer<MyContext>({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+})
+//Start the Webserver and deploy
+const { url } = await startStandaloneServer(server, {
+    listen: {
+        port: 4000
+    },
+    context: async () => {
+        return {
+            dataSources: {
+                booksAPI: new BooksAPI()
+            }
+        }
+    }
+})
+console.log(`Apollo Server is Started at ${url}`)
+
+GetAll:
+query Books {
+  books {
+    id
+    title
+    author
+  }
+}
+save
+mutation SaveBook($input:BookInput) {
+   addBook(input:$input) {
+     author
+     
+   }
+}
+variables
+
+{
+  "input": {
+    "id": 45,
+    "title": "DGS framework",
+    "author": "Subramanian"
+  }
+}
+
+update:
+mutation UpdateBook($updateBookId: Int!, $input: BookUpdateInput) {
+  updateBook(id: $updateBookId, input: $input) {
+    title
+  }
+}
+
+variables;
+{
+  "updateBookId": 3,
+  "input" : {
+    "title": "Graphql with db",
+    "author": "Subramanian"
+  }
+}
+...........................................................................................................................................................
+							Next.js GraphQL Integration
+...........................................................................................................................................................
+ What is your project named? ... graphql-nextclient
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like to use `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to customize the default import alias (@/*)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+
+install libs:
+
+npm install @apollo/client@latest @apollo/experimental-nextjs-app-support
+
+src/app/lib/client.js
+
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+
+import {
+    registerApolloClient,
+} from "@apollo/experimental-nextjs-app-support";
+
+export const { getClient } = registerApolloClient(() => {
+    return new ApolloClient({
+        cache: new InMemoryCache(),
+        link: new HttpLink({
+            // https://studio.apollographql.com/public/spacex-l4uc6p/
+            uri: "https://countries.trevorblades.com/",
+            // you can disable result caching here if you want to
+            // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
+            // fetchOptions: { cache: "no-store" },
+        }),
+    });
+});
+
+
+src/app/countries/page.js
+
+import { gql } from "@apollo/client"
+import { getClient } from "../lib/client"
+
+//Declare Query
+const query = gql`query {
+   countries {
+        name
+    }
+  }
+`
+
+export default async function CountriesPage() {
+    const { data: { countries } } = await getClient().query({ query })
+
+    return <div>
+        <h1>Countries Info From Graphql Server</h1>
+        <ul>
+            {countries.map(country => {
+                return <li>
+                    <h3>{country.name}</h3>
+                </li>
+            })}
+        </ul>
+    </div>
+}
+...............................................End........................................................
+
+
+
+
+
+
+
+
+
+
+
